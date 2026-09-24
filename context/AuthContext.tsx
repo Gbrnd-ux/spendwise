@@ -26,34 +26,63 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
 
-    // Fetch profil dari Firestore
     const fetchProfile = async (uid: string) => {
-        const profile = await getUserDocument(uid);
-        setUserProfile(profile);
+        try {
+            const profile = await getUserDocument(uid);
+            console.log("🟢 [AuthContext] Profile loaded:", profile);
+            setUserProfile(profile);
+        } catch (err) {
+            console.error("🔴 [AuthContext] fetchProfile error:", err);
+            setUserProfile(null);
+        }
     };
 
-    // Fungsi refresh manual (untuk dipanggil setelah update profile)
     const refreshProfile = async () => {
         if (user) await fetchProfile(user.uid);
     };
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-            setUser(currentUser);
-
-            if (currentUser) {
-                // Auto-create user document jika belum ada
-                await createUserDocument(currentUser);
-                // Load profil dari Firestore
-                await fetchProfile(currentUser.uid);
-            } else {
-                setUserProfile(null);
-            }
-
+        // Timeout safety: kalau 10 detik tidak resolve, matikan loading
+        const timeout = setTimeout(() => {
+            console.warn("⚠️ [AuthContext] Timeout: forcing loading=false");
             setLoading(false);
+        }, 10000);
+
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            console.log("🔵 [AuthContext] onAuthStateChanged:", currentUser?.uid || "null");
+
+            try {
+                setUser(currentUser);
+
+                if (currentUser) {
+                    // Buat user document kalau belum ada
+                    try {
+                        await createUserDocument(currentUser);
+                        console.log("✅ [AuthContext] createUserDocument OK");
+                    } catch (err) {
+                        console.error("🔴 [AuthContext] createUserDocument error:", err);
+                        // Lanjut saja — mungkin user sudah ada
+                    }
+
+                    // Load profile
+                    await fetchProfile(currentUser.uid);
+                } else {
+                    setUserProfile(null);
+                }
+            } catch (err) {
+                console.error("🔴 [AuthContext] Outer error:", err);
+            } finally {
+                // SELALU dijalankan, apapun yang terjadi
+                clearTimeout(timeout);
+                setLoading(false);
+                console.log("🟡 [AuthContext] Loading set to false");
+            }
         });
 
-        return () => unsubscribe();
+        return () => {
+            clearTimeout(timeout);
+            unsubscribe();
+        };
     }, []);
 
     return (
