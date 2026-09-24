@@ -1,16 +1,17 @@
 // components/Header.tsx
 "use client";
 
-import { Search, Bell, Wallet } from "lucide-react";
+import { Search, Bell, Wallet, Menu } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 
 interface HeaderProps {
     title?: string;
     subtitle?: string;
+    onOpenDrawer?: () => void;
 }
 
-export default function Header({ title, subtitle }: HeaderProps) {
+export default function Header({ title, subtitle, onOpenDrawer }: HeaderProps) {
     const { userProfile } = useAuth();
 
     const getGreeting = () => {
@@ -23,15 +24,24 @@ export default function Header({ title, subtitle }: HeaderProps) {
     return (
         <header className="sticky top-0 z-30 bg-[#0B1120]/80 backdrop-blur-xl border-b border-white/5">
             <div className="flex items-center justify-between px-4 lg:px-8 py-4">
-                {/* Left: Mobile Logo / Desktop Title */}
+                {/* Left: Mobile Hamburger + Logo / Desktop Title */}
                 <div className="flex items-center gap-4">
-                    {/* Mobile Logo */}
-                    <Link href="/dashboard" className="flex lg:hidden items-center gap-2">
-                        <div className="w-8 h-8 bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] rounded-lg flex items-center justify-center shadow-[0_0_12px_rgba(99,102,241,0.5)]">
-                            <Wallet size={16} className="text-white" />
-                        </div>
-                        <span className="text-lg font-bold text-white">SpendWise</span>
-                    </Link>
+                    {/* Mobile: Hamburger + Logo */}
+                    <div className="flex lg:hidden items-center gap-2">
+                        <button
+                            onClick={onOpenDrawer}
+                            className="p-2 -ml-2 rounded-xl text-[#94A3B8] hover:text-white hover:bg-white/5 transition-all"
+                            aria-label="Open menu"
+                        >
+                            <Menu size={20} />
+                        </button>
+                        <Link href="/dashboard" className="flex items-center gap-2">
+                            <div className="w-8 h-8 bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] rounded-lg flex items-center justify-center shadow-[0_0_12px_rgba(99,102,241,0.5)]">
+                                <Wallet size={16} className="text-white" />
+                            </div>
+                            <span className="text-lg font-bold text-white">SpendWise</span>
+                        </Link>
+                    </div>
 
                     {/* Desktop Title */}
                     <div className="hidden lg:block">
