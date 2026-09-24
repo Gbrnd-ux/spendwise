@@ -2,6 +2,18 @@
 
 /* ===== CUSTOM ANIMATIONS ===== */
 @theme {
+    --animate-fade-in: fade-in 0.3s ease-out forwards;
+
+    @keyframes fade-in {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
     --animate-fade-in-up: fade-in-up 0.6s ease-out forwards;
 
     @keyframes fade-in-up {
@@ -88,4 +100,33 @@ input:-webkit-autofill:active {
     -webkit-text-fill-color: white !important;
     transition: background-color 5000s ease-in-out 0s;
     caret-color: white;
+}
+
+/* ===== GLOBAL SCROLLBAR ===== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(30, 41, 59, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(139, 92, 246, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(139, 92, 246, 0.5);
+}
+
+/* ===== SMOOTH SCROLL ===== */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ===== PREVENT TEXT SELECTION ON BUTTONS ===== */
+button {
+    -webkit-tap-highlight-color: transparent;
 }

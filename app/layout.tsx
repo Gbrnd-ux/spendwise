@@ -30,15 +30,6 @@ export default function RootLayout({
                         theme="dark"
                         richColors
                         closeButton
-                        toastOptions={{
-                            style: {
-                                background: "rgba(30, 41, 59, 0.95)",
-                                backdropFilter: "blur(20px)",
-                                border: "1px solid rgba(255, 255, 255, 0.1)",
-                                color: "white",
-                                borderRadius: "14px",
-                            },
-                        }}
                     />
                 </AuthProvider>
             </body>

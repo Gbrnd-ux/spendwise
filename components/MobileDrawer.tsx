@@ -1,11 +1,10 @@
 // components/MobileDrawer.tsx
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
-import { useState } from "react";
 import {
     LayoutDashboard, Receipt, Wallet, Target, Tags, BarChart3,
     Settings, LogOut, X
@@ -76,12 +75,12 @@ export default function MobileDrawer({ isOpen, onClose }: Props) {
         <div className="fixed inset-0 z-[100] lg:hidden">
             {/* Backdrop */}
             <div
-                className="absolute inset-0 bg-black/70 backdrop-blur-md animate-fade-in"
+                className="absolute inset-0 bg-black/70 backdrop-blur-md"
                 onClick={onClose}
             />
 
             {/* Drawer */}
-            <div className="relative h-full w-72 max-w-[80vw] bg-[#0B1120] border-r border-white/10 flex flex-col shadow-2xl animate-fade-in-up">
+            <div className="relative h-full w-72 max-w-[80vw] bg-[#0B1120] border-r border-white/10 flex flex-col shadow-2xl">
                 {/* Header */}
                 <div className="flex items-center justify-between p-5 border-b border-white/5">
                     <Link href="/dashboard" onClick={onClose} className="flex items-center gap-2">
